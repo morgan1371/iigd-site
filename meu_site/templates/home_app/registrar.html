@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <h2>Cria uma conta</h2>
+    {% for field in form %}
+        {{field.error}}
+    {% endfor %}
+    <form action="/contas/registrar/" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" value="Criar conta">
+    </form>
+{% endblock %}

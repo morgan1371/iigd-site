@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    width:60%
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+</style>
+<a href="{% url 'congressoPais:index' %}"><button type="button">Voltar</button></a>
+
+
+
+<!-- o formulário de edição vem aqui! -->
+<div id="formulario">
+{% if form is not None %}
+    <h2>Altere os dados de {{form.nome.value}} {{form.sobrenome.value}} ({{form_tipo}}) abaixo</h2>
+    <form method="post" action="{% url 'congressoPais:cad_editar' %}?tipo_edit={{form_tipo}}&id_edit={{id_edit}}">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input type="submit" name="" value="Alterar dados">
+    </form>
+{%endif%}
+</div><!-- formulario -->
+<br>
+<hr>
+<br>
+<div id="familia">
+
+    <div id="pais">
+        <table >
+            <caption><h1>Adultos</h1></caption>
+            <tr>
+                <th><h3>Nome</h3></th>
+                <th><h3>Irá ao evento?</h3></th>
+                <th><h3>Ajustes</h3></th>
+            </tr>
+            {% for part in participante %}
+                <tr>
+                    <th><p>{{part.nome}} {{part.sobrenome}}</p></th>
+                    <th>{% if part.vai_participar %}Sim{% else %}Não{% endif %}</th>
+                    <th><p><a href="{% url 'congressoPais:cad_editar' %}?tipo_edit=participante&id_edit={{part.id}}">editar</a></p></th>
+                </tr>
+            {% endfor %}
+        </table>
+    </div><!-- pais -->
+
+    <div id="criancas">
+        {% if crianca.count == 0 %}
+            <h1>Crianças</h1>
+            <p>Você não registrou nenhuma ainda.</p>
+            <p>Cadastre uma criança <a href="{% url 'congressoPais:cad_crianca' %}">aqui!</a></p>
+        {% else %}
+            <table>
+                <caption><h1>Crianças</h1></caption>
+                <tr>
+                    <th><h3>Nome</h3></th>
+                    <th><h3>Irá ao evento?</h3></th>
+                    <th><h3>Ajustes</h3></th>
+                </tr>
+                {% for cria in crianca %}
+                    <tr>
+                        <th><p>{{cria.nome}} {{cria.sobrenome}}</p></th>
+                        <th>{% if cria.vai_participar %}Sim{% else %}Não{% endif %}</th>
+                        <th><p><a href="{% url 'congressoPais:cad_editar' %}?tipo_edit=crianca&id_edit={{cria.id}}">editar</a></p></th>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+    </div><!-- criancas -->
+
+</div><!-- familia -->
+
+{{valid}}
+
+{% endblock  %}

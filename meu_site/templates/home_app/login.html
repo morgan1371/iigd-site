@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+    {{mensagem_especial}}
+    {% if form.errors %}
+        <p class="error">Perdão, isto não é um usuário ou senha</p>
+    {% endif %}
+    <form action="/contas/auth/" method="post">
+        {% csrf_token %}
+        <label for="usuario">E-mail:</label>
+        <input type="text" name="usuario" value="" id="usuario">
+        <label for="senha">Senha:</label>
+        <input type="password" name="senha" value="" id="senha">
+
+        <input type="submit" value="Entrar na conta">
+    </form>
+{% endblock %}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIGD/Ba - SEDE</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style type="text/css">
+        body{padding-top: 60px;}
+        hr {
+          border:solid 1px black;
+          width: 96%;
+          color: #FFFF00;
+          height: 1px;;
+        }
+    </style>
+</head>
+<body>
+    <body>
+  
+    <div class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'home:index' %}">IIGD/BA - SEDE</a>
+        </div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+              <li><a class="navbar-link" href="/admin/">Admin</a></li>
+              <li><a class="navbar-link" href="{% url 'congressoPais:index' %}">Congresso de Pais</a></li>
+          </ul>
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </div><!-- /.navbar -->
+    <div class="container">
+      <div id="topo">
+        
+      </div><!-- topo -->
+      {% if user.is_authenticated %}
+          <p>Você está na sua conta {{ user.nome }} {{ user.sobrenome }}, não é? <a href="{% url 'home:editar' %}">Editar</a> <a href="{% url 'home:sairConta' %}">Sair</a><p>
+      {% else %}
+          <a href="{% url 'home:criarConta' %}">Criar conta</a> or <a href="{% url 'home:entrarConta' %}">Entrar</a>
+      {% endif %}
+      {% block content %}
+      
+      {% endblock %}
+    </div><!-- /.container -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
+
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% if part_count == 2  %}
+                <h1>Editar dados da familia <a href="{% url 'congressoPais:cad_editar' %}">Aqui!</a></h1>
+            {% else %}
+                {% if part_count == 0 %}
+                    <h1>Ainda não existem participantes cadastrados.</h1>
+                    <p>Crianças poderam ser cadastradas após cadastramento de um do casal.</p>
+                {% else %}
+                    <h1>Cadastrou um dos pais, pode registrar mais um.</h1>
+                    <p>Editar dados da familia <a href="{% url 'congressoPais:cad_editar' %}">Aqui!</a></p>
+                {% endif %}
+                <p>Cadastre os pendentes <a href="{% url 'congressoPais:cad_participante' %}">Aqui!</a></p>
+                
+            {% endif %}
+            {% if part_count > 0 and part_count <= 2  %}
+                <hr>
+                {% if tem_responsavel %}                
+                    <h1>Cadastre crianças <a href="{% url 'congressoPais:cad_crianca' %}">Aqui!</a></h1>
+                {% else %}
+                    <h1>Todos os participantes não irão ao evento</h1>
+                    <p>Altere isto <a href="{% url 'congressoPais:cad_editar' %}">aqui!</a></p>
+                {% endif %}
+            {% endif %} 

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+    <title>IIGD/BA - SEDE</title>
+    <link rel="shortcut icon" href="/static/home/media/logoIIGD.jpg"/>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		
+		<!-- CSS -->
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="/static/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="/static/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+  </head>
+	<body>
+
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Mudar navegação</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/"> 
+            <img src="/static/home/media/logoIIGD.jpg" alt="logoIIGD" width="80" height="30">
+		      </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Inicio</a></li>
+            <li><a href="#about">Sobre</a></li>
+            <li><a href="#contact">Contato</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Eventos <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+				    <li class="dropdown-header">Igreja</li>
+              <li><a href="{% url 'congressoPais:index' %}">Congresso de Pais</a></li>
+              <li role="separator" class="divider"></li>
+              <li class="dropdown-header">Juventude</li>
+              <li><a href="#">Pagina em construção</a></li>
+              </ul><!-- ul class="dropdown-menu" -->
+            </li><!-- li class="dropdown-header" Igreja -->
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+              <li><a href="{% url 'home:editar' %}">Olá, {{user.nome}} {{user.sobrenome}}</a></li>
+              {% if user.is_superuser %}
+                <li><a href="/admin/">Admin</a></li>
+              {% endif %}
+              <li><a href="{% url 'home:sairConta' %}">Sair</a></li>
+            {% else %}
+              <li><a href="{% url 'home:criarConta' %}">Criar conta</a></li>
+              <li><a href="{% url 'home:entrarConta' %}">Entrar na conta</a></li>
+            {% endif %}
+          </ul><!-- area barra a direita -->
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <br>
+        {% block content %}
+        
+        {% endblock  %}
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/bootstrap/3.3.7/js/jquery-3.2.1.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+	<script src="/static/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+  
+
+
+	</body>
+</html>

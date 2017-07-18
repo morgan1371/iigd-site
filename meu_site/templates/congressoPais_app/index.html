@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+    <br>
+    <!-- logo ou slide do evento -->
+    <img src="/static/congressoPais/media/logo.png" alt="" height="250px" width="100%" align="middle">
+    {% if user.is_authenticated %}
+        {% if pesq_count == 0 %}
+            <form method="post" action="{% url 'congressoPais:index' %}">
+                {% csrf_token %}
+                {{pesq_form}}
+                <input type="submit" name="" value="Responder pesquisa">
+            </form>
+        {% else %}
+        <div id="nav nav-tabs">
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a href="#familia" aria-controls="cad_part" role="tab" data-toggle="tab">
+                        Sua Linda Familia
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#cad_part" aria-controls="cad_part" role="tab" data-toggle="tab">
+                        Cadastrar Participante (adulto)
+                    </a>
+                </li>
+                <li role="presentation">
+                    <a href="#cad_kid" aria-controls="cad_kid" role="tab" data-toggle="tab">
+                        Cadastrar Criança
+                    </a>
+                </li>
+                
+                <li role="presentation" class="dropdown">
+                    <a href="#" class="dropdown-toggle" id="myTabDrop1" data-toggle="dropdown" aria-controls="myTabDrop1-contents" aria-expanded="true">
+                        Editar Familia 
+                        <span class="caret"></span></a> 
+                        
+                        <ul class="dropdown-menu" aria-labelledby="myTabDrop1" id="myTabDrop1-contents"> 
+                            <li>
+                                <a href="#editpart" role="tab" id="dropdown1-tab" data-toggle="tab" aria-controls="dropdown1">
+                                    Editar Participantes
+                                </a>
+                            </li> 
+                            <li>
+                                <a href="#editkid" role="tab" id="dropdown2-tab" data-toggle="tab" aria-controls="dropdown2">
+                                    Editar Crianças
+                                </a>
+                            </li> 
+                        </ul> 
+                    </li>
+                </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="familia">
+                {% if info.part_count == 2 %}
+                    <div class="alert alert-warning alert-dismissible fade in" role="alert"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button> 
+                        <strong>Parabéns!</strong> Você cadastrou o máximo de participantes adultos (2 pessoas). 
+                    </div>
+                {% elif info.part_count > 2 %}
+                    <div class="alert alert-warning alert-dismissible fade in" role="alert"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button> 
+                        <strong>Espera...</strong> Como você conseguiu cadastrar mais de 2 pessoas adultas? @_@'. 
+                    </div>
+                {% endif %}
+                {% if not info.tem_responsavel %}
+                    <div class="alert alert-danger alert-dismissible fade in" role="alert"> 
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">
+                                ×
+                            </span>
+                        </button> 
+                        
+                        <h4>Ei!, não há nenhum adulto para acompanhar as crianças!</h4> 
+                        <p>Por favor, selecione algum dos adultos para ir ao evento de pais. Crianças não devem andar sozinhas...</p> 
+                        <p>O que pode ser feito:</p>
+                        <p>
+                            <a aria-controls="cad_kid" role="tab" data-toggle="tab">
+                                <button type="button" class="btn btn-danger">Cadastre Participantes</button>
+                            </a>
+                            {% if not info.part_count == 0 and info.part_count <= 2%}
+                            <a  aria-controls="cad_kid" role="tab" data-toggle="tab">
+                                <button type="button" class="btn btn-danger">Edite Participantes</button>
+                            </a>
+                            {% endif %}
+                        </p> 
+                    </div>
+                {% endif %}
+                {% if not familia.part is None %}
+                    <h2>Adultos cadastrados (total: {{info.part_count}})</h2>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Nome</th>
+                                    <th>Participa?</th>
+                                    <th>Editar Registro</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for part in familia.part %}
+                                <tr>
+                                    <th>{{part.nome}}</th>
+                                    <td>{{part.vai_participar}}</td>
+                                    <td><a href="{% url 'congressoPais:cad_editar' %}?tipo_edit=participante&id_edit={{part.id}}">Editar</a></td>
+                                </tr>
+                                {%endfor%}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <br><br>
+                    <h2>Crianças cadastradas (total: {{info.crian_count}})</h2>
+                    {% if not familia.kid is None %}
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Participa?</th>
+                                        <th>Editar Registro</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for kid in familia.kid %}
+                                    <tr>
+                                        <th>{{kid.nome}}</th>
+                                        <td>{{kid.vai_participar}}</td>
+                                        <td><a href="{% url 'congressoPais:cad_editar' %}?tipo_edit=crianca&id_edit={{kid.id}}">Editar</a></td>
+                                    </tr>
+                                    {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        Sem crianças cadastradas
+                    {% endif %}
+                {% else %}
+                    Sem adultos cadastrados
+                {% endif %}
+                </div><!-- familia tab content -->
+
+                <!-- cad_part -->
+                <div role="tabpanel" class="tab-pane" id="cad_part">
+                    {% if info.part_count <= 2 %}
+                        <div class="container">
+                            <h2>Cadastre um Adulto</h2>
+                            <form class="form-horizontal" action="{% url 'congressoPais:cad_participante' %}" method="post">
+                                {% csrf_token %}
+                                {{info.form_cadpart.as_p}}
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-default">Cadastrar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-danger alert-dismissible fade in" role="alert"> 
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">
+                                    ×
+                                </span>
+                            </button> 
+                            <h4>Você já cadastrou dois adultos, este é o máximo de um casal.</h4> 
+                            <p>Se desejar, acesse o editar familia e faça alterações.</p>  
+                        </div>
+                    {% endif %}
+                </div><!-- cad_part tab content -->
+
+                <!-- cad_kid -->
+                <div role="tabpanel" class="tab-pane" id="cad_kid">
+                    {% if info.part_count == 0 or not info.tem_responsavel %}
+                        <div class="alert alert-danger alert-dismissible fade in" role="alert"> 
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">
+                                    ×
+                                </span>
+                            </button> 
+                            
+                            <h4>Ei!, não há nenhum adulto para acompanhar as crianças!</h4> 
+                            <p>Por favor, selecione algum dos adultos para ir ao evento de pais. Crianças não devem andar sozinhas...</p> 
+                            <p>O que pode ser feito:</p>
+                            <p> 
+                                {% if not info.tem_responsavel %}
+                                    
+                                    <a aria-controls="cad_kid" role="tab" data-toggle="tab">
+                                        <button type="button" class="btn btn-danger">Cadastre Participantes</button>
+                                    </a>
+                                    
+                                    {% if not info.part_count == 0 %}
+                                    <a aria-controls="cad_kid" role="tab" data-toggle="tab">
+                                        <button type="button" class="btn btn-danger">Edite Participantes</button>
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                            </p>
+                    {% else %}
+                        <div class="container">
+                            <h2>Cadastre uma Criança</h2>
+                            <form class="form-horizontal" action="{% url 'congressoPais:cad_crianca' %}" method="post">
+                                {% csrf_token %}
+                                {{info.form_cadkid.as_p}}
+                                <div class="form-group">
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-default">Cadastrar</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    {% endif %} 
+                        </div>
+                </div><!-- cad_kid tab content -->
+
+
+                <div role="tabpanel" class="tab-pane" id="editpart">
+                    
+                </div>
+                <div role="tabpanel" class="tab-pane" id="editkid">
+                    editkid
+                </div>
+            </div><!-- Tab panes -->
+        </div>
+        {% endif %}
+    {% else %}
+        <h1>Você precisa entrar em sua conta para continuar!</h1>
+        <h3>Clique <a href="/contas/entrar/">aqui</a> para entrar em sua conta.</h3>
+    {% endif %}
+{% endblock  %}

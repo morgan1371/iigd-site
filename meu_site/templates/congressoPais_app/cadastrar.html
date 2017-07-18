@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load filtros_extras %}
+{% block content %}
+
+<h1>{{form_titulo}}</h1>
+<form class="form-horizontal" method="post" action={{form_url}}>
+    {% csrf_token %}
+    {{form.as_p}}
+    <input type="submit" name="" value="Cadastrar">
+</form>
+
+<script type="text/javascript">
+    $(document).ready(function(){ 
+    $("#id_data_nasc").keyup(function(e){
+        if (e.keyCode != 8){   
+            if ($(this).val().length == 2){
+                $(this).val($(this).val() + "/");
+            }else if ($(this).val().length == 5){
+                $(this).val($(this).val() + "/");
+            }
+        }
+    });   
+    });
+</script>
+{% endblock  %}
